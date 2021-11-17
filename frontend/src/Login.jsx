@@ -38,7 +38,8 @@ function Login () {
 
       <TextField
         autoComplete='current-password'
-        fullWidth id='password'
+        fullWidth
+        id='password'
         label='Password'
         margin='normal'
         onInput={e => setPassword(e.target.value)}
