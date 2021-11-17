@@ -1,14 +1,14 @@
 import React from 'react';
 import {
-  Link,
+  Link as RouteLink,
   Outlet,
 } from 'react-router-dom';
 
 function App () {
   return (
     <div>
-      <Link to='/login'>Login</Link>
-      <Link to='/register'>Register</Link>
+      <RouteLink to='/login'>Login</RouteLink>
+      <RouteLink to='/register'>Register</RouteLink>
       <hr />
       <Outlet />
     </div>
