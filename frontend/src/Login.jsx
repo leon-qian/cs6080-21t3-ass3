@@ -14,24 +14,15 @@ function Login () {
   const [password, setPassword] = useState('');
 
   return (
-    <Container
-      component='main'
-      maxWidth='xs'
-    >
-      <Typography
-        align='center'
-        component='h1'
-        variant='h2'
-      >
+    <Container component='main' maxWidth='xs'>
+      <Typography align='center' component='h1' variant='h2'>
         Welcome back!
       </Typography>
-      <Typography
-        align='center'
-        component='h1'
-        variant='body2'
-      >
+
+      <Typography align='center' component='h1' variant='body2'>
         Login to your account here.
       </Typography>
+
       <TextField
         autoComplete='email'
         autoFocus
@@ -44,10 +35,10 @@ function Login () {
         type='text'
         value={email}
       />
+
       <TextField
         autoComplete='current-password'
-        fullWidth
-        id='password'
+        fullWidth id='password'
         label='Password'
         margin='normal'
         onInput={e => setPassword(e.target.value)}
@@ -55,41 +46,23 @@ function Login () {
         type='password'
         value={password}
       />
-      <Button
-        onClick={() => console.log(email, password)}
-        fullWidth
-        variant="contained"
-      >
+
+      <Button onClick={() => console.log(email, password)} fullWidth variant="contained">
         Login
       </Button>
-      <Grid
-        container
-      >
-        <Grid
-          item
-          xs
-        >
-          <RouteLink
-            to='/'
-          >
-            <Link
-              component='span'
-              variant='body2'
-            >
+
+      <Grid container>
+        <Grid item xs>
+          <RouteLink to='/'>
+            <Link component='span' variant='body2'>
               Forgot password?
             </Link>
           </RouteLink>
         </Grid>
-        <Grid
-          item
-        >
-          <RouteLink
-            to='/register'
-          >
-            <Link
-              component='span'
-              variant='body2'
-            >
+
+        <Grid item>
+          <RouteLink to='/register'>
+            <Link component='span' variant='body2'>
               {'Don\'t have an account? Sign Up'}
             </Link>
           </RouteLink>
