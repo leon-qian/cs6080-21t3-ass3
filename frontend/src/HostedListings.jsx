@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Divider, Stack, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 
 import URL from './backend';
 import Listing from './Listing';
 
 function HostedListings () {
   const [listings, setListings] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(async () => {
     const init = {
@@ -41,6 +43,10 @@ function HostedListings () {
   return (
     <Container>
       <Typography variant='h3' gutterBottom>Your Hosted Listings</Typography>
+
+      <Button onClick={() => navigate('/host/new')}>
+        Create a new listing
+      </Button>
 
       <Stack divider={<Divider flexItem orientation='horizontal' />} spacing={3}>
         {listings.map(listing =>

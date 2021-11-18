@@ -19,6 +19,7 @@ import App from './App';
 import Login from './Login';
 import Register from './Register';
 import HostedListings from './HostedListings';
+import NewListing from './NewListing';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -28,6 +29,7 @@ ReactDOM.render(
           <Route element={<Login />} path='login' />
           <Route element={<Register />} path='register' />
           <Route element={<HostedListings />} path='host' />
+          <Route element={<NewListing />} path='host/new' />
           <Route element={<>Coming soon...</>} path='list' />
           <Route element={<>{'Ain\'t nuthin here!'}</>} path='*' />
         </Route>
