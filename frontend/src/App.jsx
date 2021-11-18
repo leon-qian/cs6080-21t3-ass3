@@ -5,14 +5,29 @@ import {
 } from 'react-router-dom';
 import { Button } from '@mui/material';
 
-import { clearToken, getToken } from './backend.jsx';
+import URL, { clearToken, getToken } from './backend.jsx';
 
 function App () {
   const [auth, setAuth] = useState(''); // For debugging only.
 
   return (
     <div>
-      <Button onClick={() => clearToken()}>Logout</Button>
+      <Button onClick={async () => {
+        const init = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+
+        const response = await fetch(`${URL}/user/auth/logout`, init);
+
+        // TODO: Handle errors.
+        if (response.ok) {
+          clearToken();
+        }
+      }}>Logout</Button>
       <RouteLink to='/login'>Login</RouteLink>
       <RouteLink to='/register'>Register</RouteLink>
       <RouteLink to='/host'>View hosted listings</RouteLink>
