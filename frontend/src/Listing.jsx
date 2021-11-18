@@ -1,8 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card, CardActions, CardContent, CardMedia, Rating, Typography } from '@mui/material';
 
 function Listing ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews, price }) {
+  const navigate = useNavigate();
+
   return (
     <Card>
       <CardMedia
@@ -34,7 +37,9 @@ function Listing ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews
           console.log(id);
         }}>Test ID</Button>
 
-        <Button>
+        <Button onClick={() => {
+          navigate(`/host/edit/${id}`);
+        }}>
           Edit
         </Button>
 
