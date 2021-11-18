@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 
 import URL from './backend';
-import Listing from './Listing';
+import HostedListing from './HostedListing';
 
 function HostedListings () {
   const [listings, setListings] = useState([]);
@@ -50,7 +50,7 @@ function HostedListings () {
 
       <Stack divider={<Divider flexItem orientation='horizontal' />} spacing={3}>
         {listings.map(listing =>
-          <Listing
+          <HostedListing
             key={listing.id}
             id={listing.id}
             title={listing.title}
