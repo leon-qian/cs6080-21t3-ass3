@@ -1,17 +1,42 @@
 import React, { useState } from 'react';
 import { Link as RouteLink } from 'react-router-dom';
-import {
-  Button,
-  Container,
-  Grid,
-  Link,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Container, Link, TextField, Typography } from '@mui/material';
+
+import URL, { setToken } from './backend.jsx';
 
 function Login () {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const submit = async (email, password) => {
+    const init = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    };
+
+    try {
+      const response = await fetch(`${URL}/user/auth/login`, init);
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setToken(data.token);
+        return;
+      }
+
+      if (response.status === 400) {
+        const error = await response.json();
+        throw new Error(`${error.error}`);
+      }
+
+      throw new Error('Encountered an unexpected error.');
+    } catch (e) {
+      console.log(e);
+      // TODO: Show error in UI.
+    }
+  };
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -48,27 +73,15 @@ function Login () {
         value={password}
       />
 
-      <Button onClick={() => console.log(email, password)} fullWidth variant="contained">
+      <Button onClick={() => submit(email, password)} fullWidth variant="contained">
         Login
       </Button>
 
-      <Grid container>
-        <Grid item xs>
-          <RouteLink to='/'>
-            <Link component='span' variant='body2'>
-              Forgot password?
-            </Link>
-          </RouteLink>
-        </Grid>
-
-        <Grid item>
-          <RouteLink to='/register'>
-            <Link component='span' variant='body2'>
-              {'Don\'t have an account? Sign Up'}
-            </Link>
-          </RouteLink>
-        </Grid>
-      </Grid>
+      <RouteLink to='/register'>
+        <Link component='span' variant='body2'>
+          {'Don\'t have an account? Register here'}
+        </Link>
+      </RouteLink>
     </Container>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Button, Container, TextField, Typography } from '@mui/material';
+import { Link as RouteLink } from 'react-router-dom';
+import { Button, Container, Link, TextField, Typography } from '@mui/material';
 
 import URL, { setToken } from './backend.jsx';
 
@@ -22,7 +23,6 @@ function Register () {
 
       if (response.status === 200) {
         const data = await response.json();
-        console.log(data);
         setToken(data.token);
         return;
       }
@@ -85,6 +85,12 @@ function Register () {
       <Button onClick={() => submit(name, email, password)} fullWidth variant="contained">
         Register
       </Button>
+
+      <RouteLink to='/login'>
+        <Link component='span' variant='body2'>
+          {'Already have an account? Login here'}
+        </Link>
+      </RouteLink>
     </Container>
   );
 }

@@ -26,6 +26,7 @@ ReactDOM.render(
         <Route element={<App />} path='/'>
           <Route element={<Login />} path='login' />
           <Route element={<Register />} path='register' />
+          <Route element={<>{'Ain\'t nuthin here!'}</>} path='*' />
         </Route>
       </Routes>
     </BrowserRouter>
