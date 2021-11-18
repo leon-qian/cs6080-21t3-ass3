@@ -46,6 +46,12 @@ function Listing ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews
         <Button>
           Delete
         </Button>
+
+        <Button onClick={() => {
+          navigate(`/host/publish/${id}`);
+        }}>
+          Publish
+        </Button>
       </CardActions>
     </Card>
   );
