@@ -1,11 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container, Grid, TextField, Typography } from '@mui/material';
 
-import URL from './backend';
 import Listing from './Listing';
+import URL, { hasUser, getToken, getEmail } from './backend';
+
+async function getBookedListings () {
+  const init = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+  };
+
+  const response = await fetch(`${URL}/bookings`, init);
+
+  const data = await response.json();
+
+  const bookedListings = [];
+
+  data.bookings.forEach(booking => {
+    if (
+      booking.owner === getEmail() &&
+      (booking.status === 'accepted' || booking.status === 'pending')
+    ) {
+      bookedListings.push(Number(booking.listingId));
+    }
+  });
+
+  return bookedListings.filter((id, index) => bookedListings.indexOf(id) === index);
+}
 
 function ListingManager () {
-  const [items] = useState([]);
+  const [cache] = useState([]);
   const [listings, setListings] = useState([]);
 
   useEffect(async () => {
@@ -14,32 +41,39 @@ function ListingManager () {
       headers: {
         'Content-Type': 'application/json',
       },
-    }
+    };
 
     const response = await fetch(`${URL}/listings`, init);
 
     const data = await response.json();
 
-    data.listings.forEach(item => {
-      items.push({
-        id: item.id,
-        title: item.title,
-        thumbnail: item.thumbnail,
-        reviews: item.reviews.length,
+    data.listings.forEach(listing => {
+      cache.push({
+        id: listing.id,
+        title: listing.title,
+        thumbnail: listing.thumbnail,
+        reviews: listing.reviews.length,
       });
     });
 
-    items.sort((a, b) => a.title.localeCompare(b.title));
-    // TODO: Put bookings in front.
-    // NOTE: for each item, put them in separate lists depending on where they belong
-    setListings(items);
+    cache.sort((a, b) => a.title.localeCompare(b.title));
+
+    let all = cache;
+    if (hasUser()) {
+      const bookedListings = await getBookedListings();
+      const booked = cache.filter(listing => bookedListings.indexOf(listing.id) !== -1);
+      const others = cache.filter(listing => bookedListings.indexOf(listing.id) === -1);
+      all = booked.concat(others);
+    }
+
+    setListings(all);
   }, []);
 
   const [terms, setTerms] = useState('');
 
   const search = () => {
     if (terms.length === 0) {
-      setListings(items);
+      setListings(cache);
       return;
     }
 
@@ -47,7 +81,7 @@ function ListingManager () {
     const filtered = [];
 
     // Preserves ordering.
-    items.forEach(listing => {
+    cache.forEach(listing => {
       let matched = false;
       filters.forEach(filter => {
         // TODO: Add address searching as well.
@@ -65,15 +99,18 @@ function ListingManager () {
 
   return (
     <Container align='center'>
-      <Typography component='h1' variant='h5' gutterBottom>Explore listings</Typography>
+      <Typography component='h1' variant='h3' gutterBottom>Listings</Typography>
 
-      <TextField label='Search Terms' value={terms} onInput={(e) => setTerms(e.target.value)} />
-      <Button onClick={search}>Search</Button>
+      <TextField
+        fullWidth
+        label='Search Terms'
+        margin='normal'
+        onInput={(e) => setTerms(e.target.value)}
+        value={terms}
+      />
 
-      <Typography component='h2' variant='overline' gutterBottom>Listings from your bookings</Typography>
-      {/* TODO: List the login user's bookings first. */}
+      <Button fullWidth onClick={search} sx={{ mt: 0, mb: 5 }} variant='contained'>Search</Button>
 
-      <Typography component='h2' variant='overline' gutterBottom>All listings</Typography>
       <Grid container spacing={4}>
         {listings.map(listing =>
           <Grid item key={listing.id} xs={12} sm={6} md={4}>
@@ -86,7 +123,7 @@ function ListingManager () {
           </Grid>
         )}
       </Grid>
-    </Container>
+    </Container >
   );
 }
 

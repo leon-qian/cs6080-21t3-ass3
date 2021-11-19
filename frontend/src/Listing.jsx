@@ -7,18 +7,19 @@ function Listing ({ id, title, thumbnail, reviews }) {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <CardMedia component='img' image={thumbnail} alt={`Thumbnail of ${title}`} sx={{ height: '40%' }} />
-      <CardContent sx={{ flexGrow: 1 }}>
+    <Card sx={{ height: '100%' }}>
+      <CardMedia component='img' image={thumbnail} alt={`Thumbnail of ${title}`} sx={{ height: 120 }} />
+      <CardContent>
         <Typography gutterBottom variant='h5' component='h2'>
           {title}
         </Typography>
-        <Typography>
+
+        <Typography component='div' variant='overline'>
           {reviews} reviews
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size='small' onClick={() => navigate(`/list/view/${id}`)}>View</Button>
+        <Button fullWidth size='small' onClick={() => navigate(`/list/view/${id}`)}>View</Button>
       </CardActions>
     </Card>
   );
