@@ -20,8 +20,7 @@ import BookingManager from './BookingManager';
 import HostingManager from './HostingManager';
 import ListingManager from './ListingManager';
 
-import ListingCreator from './ListingCreator';
-import ListingEditor from './ListingEditor';
+import ListingEditor from './ListingCreator';
 import ListingPublisher from './ListingPublisher';
 import ListingViewer from './ListingViewer';
 
@@ -37,7 +36,7 @@ ReactDOM.render(
           <Route path='host' element={<HostingManager />} />
           <Route path='list' element={<ListingManager />} />
 
-          <Route path='list/create' element={<ListingCreator />} />
+          <Route path='list/create' element={<ListingEditor createMode />} />
           <Route path='list/edit/:listingId' element={<ListingEditor />} />
           <Route path='list/publish/:listingId' element={<ListingPublisher />} />
           <Route path='list/view/:listingId' element={<ListingViewer />} />
