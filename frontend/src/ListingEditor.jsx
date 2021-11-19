@@ -20,9 +20,9 @@ function ListingEditor ({ createMode }) {
   const navigate = useNavigate();
   const params = useParams();
 
-  let id = -1;
+  let listingId = -1;
   if (!createMode) {
-    id = parseInt(params.listingId, 10);
+    listingId = parseInt(params.listingId, 10);
   }
 
   const [title, setTitle] = useState('');
@@ -54,7 +54,7 @@ function ListingEditor ({ createMode }) {
       },
     };
 
-    const response = await fetch(`${URL}/listings/${id}`, init);
+    const response = await fetch(`${URL}/listings/${listingId}`, init);
 
     const data = await response.json();
 
@@ -114,7 +114,7 @@ function ListingEditor ({ createMode }) {
       body: JSON.stringify({ title, address, thumbnail, price: Number(price), metadata }),
     };
 
-    await fetch(`${URL}/listings/${id}`, init);
+    await fetch(`${URL}/listings/${listingId}`, init);
 
     navigate('/host');
   };

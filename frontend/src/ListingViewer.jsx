@@ -19,7 +19,7 @@ function ListingViewer () {
   // This works by forcing the useEffect to run again.
   const [refresh, setRefresh] = useState(0);
 
-  const id = parseInt(params.listingId, 10);
+  const listingId = parseInt(params.listingId, 10);
 
   useEffect(async () => {
     const init = {
@@ -29,7 +29,7 @@ function ListingViewer () {
       },
     };
 
-    const response = await fetch(`${URL}/listings/${id}`, init);
+    const response = await fetch(`${URL}/listings/${listingId}`, init);
     if (!response.ok) {
       console.log(`TEMP ERROR HANDLER - ${response.status}`);
       return;
@@ -52,7 +52,7 @@ function ListingViewer () {
 
       const data = await response.json();
       data.bookings.forEach(booking => {
-        if (/* booking.status === 'accepted' && */ booking.owner === getEmail() && parseInt(booking.listingId, 10) === id) {
+        if (/* booking.status === 'accepted' && */ booking.owner === getEmail() && parseInt(booking.listingId, 10) === listingId) {
           setBooking(booking);
         }
       });
@@ -74,7 +74,7 @@ function ListingViewer () {
       body: JSON.stringify({ dateRange: range, totalPrice: 0 }),
     }
 
-    const response = await fetch(`${URL}/bookings/new/${id}`, init);
+    const response = await fetch(`${URL}/bookings/new/${listingId}`, init);
     if (!response.ok) {
       const error = await response.json();
       console.log('ERROR: ' + error.error);
@@ -94,7 +94,7 @@ function ListingViewer () {
         body: JSON.stringify({ review: { comment, rating } }),
       }
 
-      const response = await fetch(`${URL}/listings/${id}/review/${booking.id}`, init);
+      const response = await fetch(`${URL}/listings/${listingId}/review/${booking.id}`, init);
       if (!response.ok) {
         const error = await response.json();
         console.log('ERROR: ' + error.error);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Container, Paper, TextField } from '@mui/material';
+import { Button, Container, Grid, TextField } from '@mui/material';
 
 import URL, { getToken } from './backend';
 
@@ -10,11 +10,7 @@ function ListingPublisher () {
 
   const [availability, setAvailability] = useState([{ start: '', end: '' }]);
 
-  // TODO: Validate this and mark inputs with error styling if false.
-  // console.log(new Date(start) <= new Date(end));
-
-  const id = parseInt(params.listingId, 10);
-  // TODO: Fetch current values and set the state.
+  const listingId = parseInt(params.listingId, 10);
 
   const submit = async () => {
     const init = {
@@ -26,7 +22,7 @@ function ListingPublisher () {
       body: JSON.stringify({ availability }),
     };
 
-    const response = await fetch(`${URL}/listings/publish/${id}`, init);
+    const response = await fetch(`${URL}/listings/publish/${listingId}`, init);
     if (!response.ok) {
       console.log(`TEMP ERROR HANDLER - ${response.status}`);
       return;
