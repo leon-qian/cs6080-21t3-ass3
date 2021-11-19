@@ -83,6 +83,10 @@ function HostedListing ({ id, title, type, beds, bathrooms, thumbnail, rating, r
           Delete
         </Button>
 
+        <Button onClick={() => navigate(`/host/bookings/${id}`)}>
+          Bookings
+        </Button>
+
         {
           published
             ? <Button onClick={unpublish}>Unpublish</Button>

@@ -20,6 +20,7 @@ import ListingEditor from './ListingEditor';
 import ListingPublisher from './ListingPublisher';
 import Listings from './Listings';
 import ListingViewer from './ListingViewer';
+import Bookings from './Bookings';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -35,6 +36,7 @@ ReactDOM.render(
           <Route element={<ListingPublisher />} path='host/publish/:listingId' />
           <Route element={<Listings />} path='list' />
           <Route element={<ListingViewer />} path='list/view/:listingId' />
+          <Route element={<Bookings />} path='host/bookings/:listingId' />
           <Route element={<>{'Ain\'t nuthin here!'}</>} path='*' />
         </Route>
       </Routes>
