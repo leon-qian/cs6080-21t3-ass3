@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, Container, Snackbar, TextField, Typography } from '@mui/material';
+import { Button, Container, Rating, Snackbar, TextareaAutosize, TextField, Typography } from '@mui/material';
 
-import URL, { getToken } from './backend';
+import URL, { hasUser, getToken, getEmail } from './backend';
 
 function ListingViewer () {
   const params = useParams();
@@ -12,6 +12,12 @@ function ListingViewer () {
     thumbnail: '',
     reviews: [],
   });
+
+  const [booking, setBooking] = useState(null);
+
+  // Hack used to hot reload the page contents without actually reloading.
+  // This works by forcing the useEffect to run again.
+  const [refresh, setRefresh] = useState(0);
 
   const id = parseInt(params.listingId, 10);
 
@@ -31,9 +37,32 @@ function ListingViewer () {
 
     const data = await response.json();
     setListing(data.listing);
-  }, []);
+
+    if (hasUser()) {
+      const init = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+      };
+
+      const response = await fetch(`${URL}/bookings`, init);
+      if (!response.ok) return;
+
+      const data = await response.json();
+      data.bookings.forEach(booking => {
+        if (/* booking.status === 'accepted' && */ booking.owner === getEmail() && parseInt(booking.listingId, 10) === id) {
+          setBooking(booking);
+        }
+      });
+    }
+  }, [refresh]);
 
   const [booked, setBooked] = useState(false);
+  const [range, setRange] = useState({ start: '', end: '' });
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
   const submit = async () => {
     const init = {
@@ -54,7 +83,26 @@ function ListingViewer () {
     }
   };
 
-  const [range, setRange] = useState({ start: '', end: '' });
+  const review = async () => {
+    if (hasUser() && booking) {
+      const init = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`
+        },
+        body: JSON.stringify({ review: { comment, rating } }),
+      }
+
+      const response = await fetch(`${URL}/listings/${id}/review/${booking.id}`, init);
+      if (!response.ok) {
+        const error = await response.json();
+        console.log('ERROR: ' + error.error);
+      } else {
+        setRefresh(refresh + 1);
+      }
+    }
+  };
 
   return (
     <Container>
@@ -90,6 +138,16 @@ function ListingViewer () {
       />
 
       <Button onClick={submit}>Book this listing</Button>
+
+      <TextareaAutosize minRows={5} value={comment} onInput={e => { setComment(e.target.value) }} />
+      <Rating value={rating} precision={0.5} onChange={(e, v) => setRating(v)} />
+      <Button onClick={review}>Submit review</Button>
+
+      {
+        booking
+          ? <Typography>{booking.id}</Typography>
+          : <></>
+      }
     </Container>
   );
 }
