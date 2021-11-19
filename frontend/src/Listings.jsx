@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography } from '@mui/material';
+import { Button, Container, Grid, TextField, Typography } from '@mui/material';
 
 import URL from './backend';
 import Listing from './Listing';
 
 function Listings () {
+  const [items] = useState([]);
   const [listings, setListings] = useState([]);
 
   useEffect(async () => {
@@ -18,8 +19,6 @@ function Listings () {
     const response = await fetch(`${URL}/listings`, init);
 
     const data = await response.json();
-
-    const items = [];
 
     data.listings.forEach(item => {
       items.push({
@@ -36,9 +35,40 @@ function Listings () {
     setListings(items);
   }, []);
 
+  const [terms, setTerms] = useState('');
+
+  const search = () => {
+    if (terms.length === 0) {
+      setListings(items);
+      return;
+    }
+
+    const filters = terms.split(' ').filter(term => term.trim().length > 0);
+    const filtered = [];
+
+    // Preserves ordering.
+    items.forEach(listing => {
+      let matched = false;
+      filters.forEach(filter => {
+        // TODO: Add address searching as well.
+        if (!matched) {
+          if (listing.title.toLowerCase().includes(filter.toLowerCase())) {
+            filtered.push(listing);
+            matched = true; // Avoid duplicates.
+          }
+        }
+      });
+    });
+
+    setListings(filtered);
+  };
+
   return (
     <Container align='center'>
       <Typography component='h1' variant='h5' gutterBottom>Explore listings</Typography>
+
+      <TextField label='Search Terms' value={terms} onInput={(e) => setTerms(e.target.value)} />
+      <Button onClick={search}>Search</Button>
 
       <Typography component='h2' variant='overline' gutterBottom>Listings from your bookings</Typography>
       {/* TODO: List the login user's bookings first. */}
