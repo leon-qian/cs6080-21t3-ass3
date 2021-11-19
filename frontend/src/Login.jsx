@@ -77,7 +77,7 @@ function Login () {
         Login
       </Button>
 
-      <RouteLink to='/register'>
+      <RouteLink to='/auth/register'>
         <Link component='span' variant='body2'>
           {'Don\'t have an account? Register here'}
         </Link>

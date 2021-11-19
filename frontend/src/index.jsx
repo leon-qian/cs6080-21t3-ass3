@@ -11,36 +11,45 @@ import '@fontsource/roboto/700.css';
 // Import Material Icons font for use with Material UI through Google Web Fonts.
 import './index.css';
 
+// Import custom components.
 import App from './App';
 import Login from './Login';
 import Register from './Register';
-import HostedListings from './HostedListings';
-import NewListing from './NewListing';
+
+import BookingManager from './BookingManager';
+import HostingManager from './HostingManager';
+import ListingManager from './ListingManager';
+
+import ListingCreator from './ListingCreator';
 import ListingEditor from './ListingEditor';
 import ListingPublisher from './ListingPublisher';
-import Listings from './Listings';
 import ListingViewer from './ListingViewer';
-import Bookings from './Bookings';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route element={<App />} path='/'>
-          <Route element={<Navigate to='/list' />} path='' />
-          <Route element={<Login />} path='login' />
-          <Route element={<Register />} path='register' />
-          <Route element={<HostedListings />} path='host' />
-          <Route element={<NewListing />} path='host/new' />
-          <Route element={<ListingEditor />} path='host/edit/:listingId' />
-          <Route element={<ListingPublisher />} path='host/publish/:listingId' />
-          <Route element={<Listings />} path='list' />
-          <Route element={<ListingViewer />} path='list/view/:listingId' />
-          <Route element={<Bookings />} path='host/bookings/:listingId' />
-          <Route element={<>{'Ain\'t nuthin here!'}</>} path='*' />
+        <Route path='/' element={<App />} >
+          <Route path='auth/login' element={<Login />} />
+          <Route path='auth/register' element={<Register />} />
+
+          <Route path='book/:listingId' element={<BookingManager />} />
+          <Route path='host' element={<HostingManager />} />
+          <Route path='list' element={<ListingManager />} />
+
+          <Route path='list/create' element={<ListingCreator />} />
+          <Route path='list/edit/:listingId' element={<ListingEditor />} />
+          <Route path='list/publish/:listingId' element={<ListingPublisher />} />
+          <Route path='list/view/:listingId' element={<ListingViewer />} />
+
+          <Route path='auth' element={<Navigate to='/auth/login' />} />
+          <Route path='book' element={<Navigate to='/host' />} />
+          <Route path='' element={<Navigate to='/list' />} />
+          <Route path='*' element={<Navigate to='/' />} />
         </Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,
+
   document.getElementById('root'),
 );

@@ -5,7 +5,7 @@ import { Container, Divider, Stack, Typography } from '@mui/material';
 import URL, { getToken } from './backend';
 import Booking from './Booking';
 
-function Bookings () {
+function BookingManager () {
   const params = useParams();
 
   const listingId = parseInt(params.listingId, 10);
@@ -99,4 +99,4 @@ function Bookings () {
   );
 }
 
-export default Bookings;
+export default BookingManager;

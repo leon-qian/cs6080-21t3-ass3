@@ -28,10 +28,11 @@ function App () {
           clearUser();
         }
       }}>Logout</Button>
-      <RouteLink to='/login'>Login</RouteLink>
-      <RouteLink to='/register'>Register</RouteLink>
-      <RouteLink to='/host'>View hosted listings</RouteLink>
-      <RouteLink to='/list'>View all listings</RouteLink>
+      <RouteLink to='/'>AirBrB</RouteLink>
+      <RouteLink to='/list'>Listings</RouteLink>
+      <RouteLink to='/host'>Host</RouteLink>
+      <RouteLink to='/auth/login'>Login</RouteLink>
+      <RouteLink to='/auth/register'>Register</RouteLink>
       <hr />
       <Outlet />
       <hr />

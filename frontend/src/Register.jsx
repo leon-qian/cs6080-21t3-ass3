@@ -86,7 +86,7 @@ function Register () {
         Register
       </Button>
 
-      <RouteLink to='/login'>
+      <RouteLink to='/auth/login'>
         <Link component='span' variant='body2'>
           {'Already have an account? Login here'}
         </Link>

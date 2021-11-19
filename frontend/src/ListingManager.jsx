@@ -4,7 +4,7 @@ import { Button, Container, Grid, TextField, Typography } from '@mui/material';
 import URL from './backend';
 import Listing from './Listing';
 
-function Listings () {
+function ListingManager () {
   const [items] = useState([]);
   const [listings, setListings] = useState([]);
 
@@ -90,4 +90,4 @@ function Listings () {
   );
 }
 
-export default Listings;
+export default ListingManager;

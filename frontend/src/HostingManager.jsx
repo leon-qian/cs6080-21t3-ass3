@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 
 import URL from './backend';
-import HostedListing from './HostedListing';
+import Hosting from './Hosting';
 
-function HostedListings () {
+function HostingManager () {
   const [listings, setListings] = useState([]);
   const navigate = useNavigate();
 
@@ -44,13 +44,13 @@ function HostedListings () {
     <Container>
       <Typography variant='h3' gutterBottom>Your Hosted Listings</Typography>
 
-      <Button onClick={() => navigate('/host/new')}>
+      <Button onClick={() => navigate('/list/create')}>
         Create a new listing
       </Button>
 
       <Stack divider={<Divider flexItem orientation='horizontal' />} spacing={3}>
         {listings.map(listing =>
-          <HostedListing
+          <Hosting
             key={listing.id}
             id={listing.id}
             title={listing.title}
@@ -68,4 +68,4 @@ function HostedListings () {
   );
 }
 
-export default HostedListings;
+export default HostingManager;

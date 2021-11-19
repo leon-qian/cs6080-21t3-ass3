@@ -4,7 +4,7 @@ import { Button, Container, TextField } from '@mui/material';
 
 import URL, { getToken } from './backend';
 
-function NewListing () {
+function ListingCreator () {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
@@ -51,4 +51,4 @@ function NewListing () {
   );
 }
 
-export default NewListing;
+export default ListingCreator;

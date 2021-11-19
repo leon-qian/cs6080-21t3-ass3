@@ -5,7 +5,7 @@ import { Button, Card, CardActions, CardContent, CardMedia, Rating, Typography }
 
 import URL, { getToken } from './backend';
 
-function HostedListing ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews, price }) {
+function Hosting ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews, price }) {
   const navigate = useNavigate();
 
   const [refresh, setRefresh] = useState(0);
@@ -74,7 +74,7 @@ function HostedListing ({ id, title, type, beds, bathrooms, thumbnail, rating, r
         }}>Test ID</Button>
 
         <Button onClick={() => {
-          navigate(`/host/edit/${id}`);
+          navigate(`/list/edit/${id}`);
         }}>
           Edit
         </Button>
@@ -83,21 +83,21 @@ function HostedListing ({ id, title, type, beds, bathrooms, thumbnail, rating, r
           Delete
         </Button>
 
-        <Button onClick={() => navigate(`/host/bookings/${id}`)}>
+        <Button onClick={() => navigate(`/book/${id}`)}>
           Bookings
         </Button>
 
         {
           published
             ? <Button onClick={unpublish}>Unpublish</Button>
-            : <Button onClick={() => navigate(`/host/publish/${id}`)}>Publish</Button>
+            : <Button onClick={() => navigate(`/list/publish/${id}`)}>Publish</Button>
         }
       </CardActions>
     </Card>
   );
 }
 
-HostedListing.propTypes = {
+Hosting.propTypes = {
   id: PropTypes.number,
   title: PropTypes.string,
   type: PropTypes.string,
@@ -109,4 +109,4 @@ HostedListing.propTypes = {
   price: PropTypes.number,
 };
 
-export default HostedListing;
+export default Hosting;
