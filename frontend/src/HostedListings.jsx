@@ -15,7 +15,7 @@ function HostedListings () {
       headers: {
         'Content-Type': 'application/json',
       },
-    }
+    };
 
     const response = await fetch(`${URL}/listings`, init);
 
