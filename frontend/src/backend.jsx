@@ -1,22 +1,37 @@
 const URL = 'http://localhost:5005';
 
-export default URL;
+const user = {
+  token: '',
+  email: '',
+};
 
-let token = '';
+function hasUser () {
+  return user.token !== '';
+}
 
 function getToken () {
-  return token;
-}
-function setToken (newToken) {
-  token = newToken;
+  return user.token;
 }
 
-function clearToken () {
-  token = '';
+function getEmail () {
+  return user.email;
 }
 
+function setUser (userToken, userEmail) {
+  user.token = userToken;
+  user.email = userEmail;
+}
+
+function clearUser () {
+  user.token = '';
+  user.email = '';
+}
+
+export default URL;
 export {
+  hasUser,
   getToken,
-  setToken,
-  clearToken,
+  getEmail,
+  setUser,
+  clearUser,
 };

@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom';
 import { Button } from '@mui/material';
 
-import URL, { clearToken, getToken } from './backend.jsx';
+import URL, { getToken, getEmail, clearUser } from './backend.jsx';
 
 function App () {
   const [auth, setAuth] = useState(''); // For debugging only.
@@ -25,7 +25,7 @@ function App () {
 
         // TODO: Handle errors.
         if (response.ok) {
-          clearToken();
+          clearUser();
         }
       }}>Logout</Button>
       <RouteLink to='/login'>Login</RouteLink>
@@ -36,7 +36,7 @@ function App () {
       <Outlet />
       <hr />
       Bearer {auth}
-      <button onClick={() => setAuth(getToken())}>TOKEN</button>
+      <button onClick={() => setAuth(getToken() + ', ' + getEmail() + '. ')}>DEBUG USER INFO</button>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link as RouteLink } from 'react-router-dom';
 import { Button, Container, Link, TextField, Typography } from '@mui/material';
 
-import URL, { setToken } from './backend.jsx';
+import URL, { setUser } from './backend.jsx';
 
 function Login () {
   const [email, setEmail] = useState('');
@@ -22,7 +22,7 @@ function Login () {
 
       if (response.status === 200) {
         const data = await response.json();
-        setToken(data.token);
+        setUser(data.token, email);
         return;
       }
 
