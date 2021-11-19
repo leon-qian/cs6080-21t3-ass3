@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Typography } from '@mui/material';
+import { Button, Container, Snackbar, TextField, Typography } from '@mui/material';
 
-import URL from './backend';
+import URL, { getToken } from './backend';
 
 function ListingViewer () {
   const params = useParams();
@@ -33,6 +33,29 @@ function ListingViewer () {
     setListing(data.listing);
   }, []);
 
+  const [booked, setBooked] = useState(false);
+
+  const submit = async () => {
+    const init = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify({ dateRange: range, totalPrice: 0 }),
+    }
+
+    const response = await fetch(`${URL}/bookings/new/${id}`, init);
+    if (!response.ok) {
+      const error = await response.json();
+      console.log('ERROR: ' + error.error);
+    } else {
+      setBooked(true);
+    }
+  };
+
+  const [range, setRange] = useState({ start: '', end: '' });
+
   return (
     <Container>
       <Typography variant='body1'>
@@ -51,6 +74,22 @@ function ListingViewer () {
         Number of beds |
         Number of bathrooms |
       </Typography>
+
+      <TextField label='Date range start' type='date' value={range.start} onInput={(e) => {
+        setRange({ ...range, start: e.target.value });
+      }} InputLabelProps={{ shrink: true }} />
+      <TextField label='...end' type='date' value={range.end} onInput={(e) => {
+        setRange({ ...range, end: e.target.value });
+      }} InputLabelProps={{ shrink: true }} />
+
+      <Snackbar
+        open={booked}
+        autoHideDuration={5000}
+        message="Booking complete"
+        onClose={() => setBooked(false)}
+      />
+
+      <Button onClick={submit}>Book this listing</Button>
     </Container>
   );
 }
