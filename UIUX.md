@@ -1,0 +1,3 @@
+- Used `main` and `nav` tags.
+- Used `alt` tags for images.
+- Forms have the first field focused.
