@@ -33,7 +33,7 @@ function App () {
       setSnackOpen(true);
     }
 
-    navigate('/auth');
+    navigate('/');
   };
 
   return (
