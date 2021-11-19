@@ -38,18 +38,19 @@ function App () {
 
   return (
     <>
-      <AppBar>
+      <AppBar component='nav'>
         <Toolbar>
           <Box flexGrow={1}>
             <Button color='inherit' onClick={() => navigate('/')}>AirBrB</Button>
-
             <Button color='inherit' onClick={() => navigate('/list')}>Listings</Button>
-            <Button color='inherit' onClick={() => navigate('/host')}>Host</Button>
           </Box>
 
           {
             hasUser()
-              ? <Button color='inherit' onClick={logout}>Logout</Button>
+              ? <>
+                <Button color='inherit' onClick={() => navigate('/host')}>Host</Button>
+                <Button color='inherit' onClick={logout}>Logout</Button>
+              </>
               : <Button color='inherit' onClick={() => navigate('/auth')}>Login</Button>
           }
         </Toolbar>
