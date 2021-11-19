@@ -32,14 +32,14 @@ function Login () {
 
     if (response.status === 400) {
       const error = await response.json();
-      setSnackMessage(`Error: ${error.error}`);
+      setSnackMessage(`ERROR - ${error.error}`);
       setSnackOpen(true);
     }
   };
 
   return (
     <Container component='main' maxWidth='xs'>
-      <Typography align='center' component='h1' variant='body2'>Login to your account</Typography>
+      <Typography align='center' component='h1' variant='h5'>Login to your account</Typography>
 
       <TextField
         autoComplete='email'

@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
-import { Link as RouteLink } from 'react-router-dom';
-import { Button, Container, Link, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Button, Container, Snackbar, TextField, Typography } from '@mui/material';
 
 import URL, { setUser } from './backend.jsx';
 
 function Register () {
+  const navigate = useNavigate();
+
+  const [snackMessage, setSnackMessage] = useState('');
+  const [snackOpen, setSnackOpen] = useState(false);
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const submit = async (name, email, password) => {
+  const register = async () => {
+    if (password !== confirmPassword) {
+      setSnackMessage('Passwords do not match');
+      setSnackOpen(true);
+      return;
+    }
+
     const init = {
       method: 'POST',
       headers: {
@@ -18,38 +30,29 @@ function Register () {
       body: JSON.stringify({ email, password, name }),
     };
 
-    try {
-      const response = await fetch(`${URL}/user/auth/register`, init);
+    const response = await fetch(`${URL}/user/auth/register`, init);
 
-      if (response.status === 200) {
-        const data = await response.json();
-        setUser(data.token, email);
-        return;
-      }
+    if (response.status === 200) {
+      const data = await response.json();
+      setUser(data.token, email);
+      navigate('/');
+    }
 
-      if (response.status === 400) {
-        const error = await response.json();
-        throw new Error(`${error.error}`);
-      }
-
-      throw new Error('Encountered an unexpected error.');
-    } catch (e) {
-      console.log(e);
-      // TODO: Show error in UI.
+    if (response.status === 400) {
+      const error = await response.json();
+      setSnackMessage(`ERROR - ${error.error}`);
+      setSnackOpen(true);
     }
   };
 
   return (
     <Container component='main' maxWidth='xs'>
-      <Typography align='center' component='h1' variant='body2'>
-        Sign up for an account.
-      </Typography>
+      <Typography align='center' component='h1' variant='h5'>Register a new account</Typography>
 
       <TextField
         autoComplete='name'
         autoFocus
         fullWidth
-        id='name'
         label='Name'
         margin='normal'
         onInput={e => setName(e.target.value)}
@@ -61,7 +64,6 @@ function Register () {
       <TextField
         autoComplete='email'
         fullWidth
-        id='email'
         label='Email'
         margin='normal'
         onInput={e => setEmail(e.target.value)}
@@ -73,7 +75,6 @@ function Register () {
       <TextField
         autoComplete='new-password'
         fullWidth
-        id='password'
         label='Password'
         margin='normal'
         onInput={e => setPassword(e.target.value)}
@@ -82,15 +83,34 @@ function Register () {
         value={password}
       />
 
-      <Button onClick={() => submit(name, email, password)} fullWidth variant="contained">
+      <TextField
+        autoComplete='new-password'
+        fullWidth
+        label='Confirm Password'
+        margin='normal'
+        onInput={e => setConfirmPassword(e.target.value)}
+        required
+        type='password'
+        value={confirmPassword}
+      />
+
+      <Button
+        fullWidth
+        onClick={register}
+        sx={{ mt: 3, mb: 2 }}
+        variant='contained'
+      >
         Register
       </Button>
 
-      <RouteLink to='/auth/login'>
-        <Link component='span' variant='body2'>
-          {'Already have an account? Login here'}
-        </Link>
-      </RouteLink>
+      <Button fullWidth onClick={() => navigate('/auth/login')} variant='outlined'>Login</Button>
+
+      <Snackbar
+        autoHideDuration={3000}
+        message={snackMessage}
+        onClose={() => setSnackOpen(false)}
+        open={snackOpen}
+      />
     </Container>
   );
 }
