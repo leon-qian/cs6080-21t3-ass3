@@ -1,44 +1,70 @@
 import React, { useState } from 'react';
-import {
-  Link as RouteLink,
-  Outlet,
-} from 'react-router-dom';
-import { Button } from '@mui/material';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { AppBar, Box, Button, Snackbar, Toolbar } from '@mui/material';
 
-import URL, { getToken, getEmail, clearUser } from './backend.jsx';
+import URL, { hasUser, getToken, clearUser } from './backend';
 
 function App () {
-  const [auth, setAuth] = useState(''); // For debugging only.
+  const navigate = useNavigate();
+
+  const [snackMessage, setSnackMessage] = useState('');
+  const [snackOpen, setSnackOpen] = useState(false);
+
+  const logout = async () => {
+    const init = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`,
+      },
+    };
+
+    const response = await fetch(`${URL}/user/auth/logout`, init);
+
+    if (response.status === 200) {
+      clearUser();
+
+      setSnackMessage('You have logged out');
+      setSnackOpen(true);
+    }
+
+    if (response.status === 403) {
+      setSnackMessage('You were not logged in');
+      setSnackOpen(true);
+    }
+
+    navigate('/auth');
+  };
 
   return (
-    <div>
-      <Button onClick={async () => {
-        const init = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
+    <>
+      <AppBar>
+        <Toolbar>
+          <Box flexGrow={1}>
+            <Button color='inherit' onClick={() => navigate('/')}>AirBrB</Button>
 
-        const response = await fetch(`${URL}/user/auth/logout`, init);
+            <Button color='inherit' onClick={() => navigate('/list')}>Listings</Button>
+            <Button color='inherit' onClick={() => navigate('/host')}>Host</Button>
+          </Box>
 
-        // TODO: Handle errors.
-        if (response.ok) {
-          clearUser();
-        }
-      }}>Logout</Button>
-      <RouteLink to='/'>AirBrB</RouteLink>
-      <RouteLink to='/list'>Listings</RouteLink>
-      <RouteLink to='/host'>Host</RouteLink>
-      <RouteLink to='/auth/login'>Login</RouteLink>
-      <RouteLink to='/auth/register'>Register</RouteLink>
-      <hr />
+          {
+            hasUser()
+              ? <Button color='inherit' onClick={logout}>Logout</Button>
+              : <Button color='inherit' onClick={() => navigate('/auth')}>Login</Button>
+          }
+        </Toolbar>
+      </AppBar>
+      <Toolbar />
+
       <Outlet />
-      <hr />
-      Bearer {auth}
-      <button onClick={() => setAuth(getToken() + ', ' + getEmail() + '. ')}>DEBUG USER INFO</button>
-    </div>
+
+      <Snackbar
+        autoHideDuration={3000}
+        message={snackMessage}
+        onClose={() => setSnackOpen(false)}
+        open={snackOpen}
+      />
+    </>
   );
 }
 
