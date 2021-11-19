@@ -1,10 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 // Import Roboto font for use with Material UI.
 import '@fontsource/roboto/300.css';
@@ -22,19 +18,21 @@ import HostedListings from './HostedListings';
 import NewListing from './NewListing';
 import ListingEditor from './ListingEditor';
 import ListingPublisher from './ListingPublisher';
+import Listings from './Listings';
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route element={<App />} path='/'>
+          <Route element={<Navigate to='/list' />} path='' />
           <Route element={<Login />} path='login' />
           <Route element={<Register />} path='register' />
           <Route element={<HostedListings />} path='host' />
           <Route element={<NewListing />} path='host/new' />
           <Route element={<ListingEditor />} path='host/edit/:listingId' />
           <Route element={<ListingPublisher />} path='host/publish/:listingId' />
-          <Route element={<>Coming soon...</>} path='list' />
+          <Route element={<Listings />} path='list' />
           <Route element={<>{'Ain\'t nuthin here!'}</>} path='*' />
         </Route>
       </Routes>
