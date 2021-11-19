@@ -1,14 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, CardActions, CardContent, CardMedia, Rating, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Rating,
+  Typography
+} from '@mui/material';
 
 import URL, { getToken } from './backend';
 
-function Hosting ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews, price }) {
+function Hosting ({ id, onUpdate }) {
   const navigate = useNavigate();
 
-  const [refresh, setRefresh] = useState(0);
+  const [updateFlag, setUpdateFlag] = useState({});
+
+  const [title, setTitle] = useState('');
+  const [thumbnail, setThumbnail] = useState('');
+  const [price, setPrice] = useState(0);
+  const [reviews, setReviews] = useState(0);
+  const [rating, setRating] = useState(0);
+  const [type, setType] = useState('');
+  const [beds, setBeds] = useState(0);
+  const [bathrooms, setBathrooms] = useState(0);
   const [published, setPublished] = useState(false);
 
   useEffect(async () => {
@@ -20,9 +37,46 @@ function Hosting ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews
     };
 
     const response = await fetch(`${URL}/listings/${id}`, init);
+
     const data = await response.json();
-    setPublished(data.listing.published);
-  }, [refresh]);
+
+    const hosting = data.listing;
+    setTitle(hosting.title);
+    setThumbnail(hosting.thumbnail);
+    setPrice(hosting.price);
+
+    const reviews = hosting.reviews.length;
+    setReviews(reviews);
+
+    if (reviews === 0) {
+      setRating(0);
+    } else {
+      let rating = 0;
+      hosting.reviews.forEach(review => {
+        rating += review.rating;
+      });
+      setRating(rating / reviews);
+    }
+
+    setType(hosting.metadata.type);
+    setBeds(hosting.metadata.beds);
+    setBathrooms(hosting.metadata.bathrooms);
+    setPublished(hosting.published);
+  }, [updateFlag]);
+
+  const uncreate = async () => {
+    const init = {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`,
+      },
+    };
+
+    await fetch(`${URL}/listings/${id}`, init);
+
+    onUpdate({});
+  };
 
   const unpublish = async () => {
     const init = {
@@ -33,59 +87,37 @@ function Hosting ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews
       },
     };
 
-    const response = await fetch(`${URL}/listings/unpublish/${id}`, init);
-    if (!response.ok) {
-      const error = await response.json();
-      console.log(error.error);
-    }
+    await fetch(`${URL}/listings/unpublish/${id}`, init);
 
-    setRefresh(refresh + 1);
+    setUpdateFlag({});
   };
 
   return (
     <Card>
-      <CardMedia
-        alt={`Thumbnail for ${title}`}
-        component='img'
-        height='100'
-        src={thumbnail}
-      />
+      <CardMedia alt={`Thumbnail for ${title}`} component='img' height='180' src={thumbnail} />
+
       <CardContent>
-        <Typography color='text.secondary' variant='overline' component='div'>
-          {type}
+        <Typography component='div' variant='overline'>{type}</Typography>
+
+        <Typography component='div' variant='h3'>{title}</Typography>
+
+        <Typography component='div' gutterBottom variant='subtitle1'>
+          ${price} per night | {beds} beds | {bathrooms} bathrooms
         </Typography>
-        <Typography variant='h5' component='div'>
-          {title}
-        </Typography>
-        <Typography color='text.secondary'>
-          {beds} beds, {bathrooms} bathrooms.
-        </Typography>
+
         <Rating value={rating} precision={0.5} readOnly />
-        <Typography variant='body2'>
-          Average rating from {reviews} reviews.
-        </Typography>
-        <Typography>
-          ${price}
+
+        <Typography component='div' variant='subtitle2'>
+          Average rating from {reviews} reviews
         </Typography>
       </CardContent>
+
       <CardActions>
-        <Button onClick={() => {
-          console.log(id);
-        }}>Test ID</Button>
+        <Button onClick={() => navigate(`/list/edit/${id}`)}>Edit</Button>
 
-        <Button onClick={() => {
-          navigate(`/list/edit/${id}`);
-        }}>
-          Edit
-        </Button>
+        <Button onClick={uncreate}>Delete</Button>
 
-        <Button>
-          Delete
-        </Button>
-
-        <Button onClick={() => navigate(`/book/${id}`)}>
-          Bookings
-        </Button>
+        <Button onClick={() => navigate(`/book/${id}`)}>Bookings</Button>
 
         {
           published
@@ -99,14 +131,7 @@ function Hosting ({ id, title, type, beds, bathrooms, thumbnail, rating, reviews
 
 Hosting.propTypes = {
   id: PropTypes.number,
-  title: PropTypes.string,
-  type: PropTypes.string,
-  beds: PropTypes.number,
-  bathrooms: PropTypes.number,
-  thumbnail: PropTypes.string,
-  rating: PropTypes.number,
-  reviews: PropTypes.number,
-  price: PropTypes.number,
+  onUpdate: PropTypes.func,
 };
 
 export default Hosting;

@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Container, Divider, Stack, Typography } from '@mui/material';
 
-import URL from './backend';
 import Hosting from './Hosting';
+import URL, { getEmail } from './backend';
 
 function HostingManager () {
-  const [listings, setListings] = useState([]);
   const navigate = useNavigate();
+
+  const [updateFlag, setUpdateFlag] = useState({});
+
+  const [hostings, setHostings] = useState([]);
 
   useEffect(async () => {
     const init = {
@@ -21,48 +24,31 @@ function HostingManager () {
 
     const data = await response.json();
 
-    const items = [];
+    const hostings = [];
 
-    data.listings.forEach(item => {
-      items.push({
-        id: item.id,
-        title: item.title,
-        type: '',
-        beds: 0,
-        bathrooms: 0,
-        thumbnail: item.thumbnail,
-        rating: 0,
-        reviews: item.reviews.length,
-        price: item.price,
-      });
+    data.listings.forEach(hosting => {
+      if (hosting.owner === getEmail()) {
+        hostings.push(hosting.id);
+      }
     });
 
-    setListings(items);
-  }, []);
+    setHostings(hostings);
+  }, [updateFlag]);
 
   return (
-    <Container>
-      <Typography variant='h3' gutterBottom>Your Hosted Listings</Typography>
+    <Container component='main'>
+      <Typography component='h1' variant='h3' gutterBottom>Your Hosted Listings</Typography>
 
-      <Button onClick={() => navigate('/list/create')}>
+      <Button onClick={() => navigate('/list/create')} sx={{ mb: 2 }} variant='contained'>
         Create a new listing
       </Button>
 
       <Stack divider={<Divider flexItem orientation='horizontal' />} spacing={3}>
-        {listings.map(listing =>
-          <Hosting
-            key={listing.id}
-            id={listing.id}
-            title={listing.title}
-            type={listing.type}
-            beds={listing.beds}
-            bathrooms={listing.bathrooms}
-            thumbnail={listing.thumbnail}
-            rating={listing.rating}
-            reviews={listing.reviews}
-            price={listing.price}
-          />
-        )}
+        {
+          hostings.map(hosting =>
+            <Hosting key={hosting} id={hosting} onUpdate={setUpdateFlag} />
+          )
+        }
       </Stack>
     </Container>
   );
