@@ -20,7 +20,7 @@ import BookingManager from './BookingManager';
 import HostingManager from './HostingManager';
 import ListingManager from './ListingManager';
 
-import ListingEditor from './ListingCreator';
+import ListingEditor from './ListingEditor';
 import ListingPublisher from './ListingPublisher';
 import ListingViewer from './ListingViewer';
 
