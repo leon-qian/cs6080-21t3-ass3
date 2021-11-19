@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { Link as RouteLink } from 'react-router-dom';
-import { Button, Container, Link, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Button, Container, Snackbar, TextField, Typography } from '@mui/material';
 
 import URL, { setUser } from './backend.jsx';
 
 function Login () {
+  const navigate = useNavigate();
+
+  const [snackMessage, setSnackMessage] = useState('');
+  const [snackOpen, setSnackOpen] = useState(false);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const submit = async (email, password) => {
+  const login = async () => {
     const init = {
       method: 'POST',
       headers: {
@@ -17,42 +22,29 @@ function Login () {
       body: JSON.stringify({ email, password }),
     };
 
-    try {
-      const response = await fetch(`${URL}/user/auth/login`, init);
+    const response = await fetch(`${URL}/user/auth/login`, init);
 
-      if (response.status === 200) {
-        const data = await response.json();
-        setUser(data.token, email);
-        return;
-      }
+    if (response.status === 200) {
+      const data = await response.json();
+      setUser(data.token, email);
+      navigate('/');
+    }
 
-      if (response.status === 400) {
-        const error = await response.json();
-        throw new Error(`${error.error}`);
-      }
-
-      throw new Error('Encountered an unexpected error.');
-    } catch (e) {
-      console.log(e);
-      // TODO: Show error in UI.
+    if (response.status === 400) {
+      const error = await response.json();
+      setSnackMessage(`Error: ${error.error}`);
+      setSnackOpen(true);
     }
   };
 
   return (
     <Container component='main' maxWidth='xs'>
-      <Typography align='center' component='h1' variant='h2'>
-        Welcome back!
-      </Typography>
-
-      <Typography align='center' component='h1' variant='body2'>
-        Login to your account here.
-      </Typography>
+      <Typography align='center' component='h1' variant='body2'>Login to your account</Typography>
 
       <TextField
         autoComplete='email'
         autoFocus
         fullWidth
-        id='email'
         label='Email'
         margin='normal'
         onInput={e => setEmail(e.target.value)}
@@ -64,7 +56,6 @@ function Login () {
       <TextField
         autoComplete='current-password'
         fullWidth
-        id='password'
         label='Password'
         margin='normal'
         onInput={e => setPassword(e.target.value)}
@@ -73,15 +64,22 @@ function Login () {
         value={password}
       />
 
-      <Button onClick={() => submit(email, password)} fullWidth variant="contained">
-        Login
+      <Button fullWidth onClick={login} sx={{ mt: 3, mb: 2 }} variant='contained'>Login</Button>
+
+      <Button
+        fullWidth
+        onClick={() => navigate('/auth/register')}
+        variant='outlined'
+      >
+        Register
       </Button>
 
-      <RouteLink to='/auth/register'>
-        <Link component='span' variant='body2'>
-          {'Don\'t have an account? Register here'}
-        </Link>
-      </RouteLink>
+      <Snackbar
+        autoHideDuration={3000}
+        message={snackMessage}
+        onClose={() => setSnackOpen(false)}
+        open={snackOpen}
+      />
     </Container>
   );
 }
