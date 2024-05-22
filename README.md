@@ -1,3 +1,5 @@
+**NOTE: Use Node v16 to run the frontend, otherwise you will get errors.**
+
 # Assessment 3 - ReactJS: AirBrB
 
 1. Background & Motivation
